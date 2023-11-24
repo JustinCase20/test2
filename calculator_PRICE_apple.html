@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px;
+            width: 100%;
+        }
+        img#logo {
+            width: 200px; /* Adjust this value to your desired width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensures image takes up space */
+            margin: 0 auto; /* Centers the image */
+        }
+    </style>
+
+
+
+    <script>
+        var currentInput = 1;
+
+        function showNextInput() {
+            var inputs = ['doors_drawers', 'second_color', 'oak_cabinets', 'glass_doors', 'replace_glass', 'interiors', 'shelves', 'ornate_cabinets', 'soft_close_hinges', 'drilling_holes', 'wine_rack', 'extra_rooms', 'media_unit', 'media_unit_amount', 'slabs', 'backsplash', 'plumbing', 'location'];
+
+            if (currentInput < inputs.length) {
+                var inputElement = document.getElementById(inputs[currentInput - 1]);
+
+                if (inputElement.id === 'second_color' || inputElement.id === 'oak_cabinets' || inputElement.id === 'soft_close_hinges') {
+                    var val = inputElement.value.trim();
+                    if (val !== '0' && val !== '1' && val !== '') {
+                        alert("Please input '1' for Yes or '0' for No, or leave it empty.");
+                        return;
+                    }
+                }
+
+                inputElement.style.display = 'none';
+                document.getElementById(inputs[currentInput]).style.display = 'block';
+                document.getElementById(inputs[currentInput]).focus();
+                currentInput++;
+
+                if (inputElement.id === 'media_unit' && inputElement.value.trim() === '0') {
+                    document.getElementById('media_unit_amount').style.display = 'none';
+                    showNextInput();
+                }
+            } else {
+                calculateCost();
+            }
+        }
+
+        function calculateCost() {
+            var doors_drawers = parseInt(document.getElementById("doors_drawers").value) || 0;
+            var second_color = parseInt(document.getElementById("second_color").value) || 0;
+            var oak_cabinets = parseInt(document.getElementById("oak_cabinets").value) || 0;
+            var glass_doors = parseInt(document.getElementById("glass_doors").value) || 0;
+            var replace_glass = parseInt(document.getElementById("replace_glass").value) || 0;
+            var interiors = parseInt(document.getElementById("interiors").value) || 0;
+            var shelves = parseInt(document.getElementById("shelves").value) || 0;
+            var ornate_cabinets = parseInt(document.getElementById("ornate_cabinets").value) || 0;
+            var soft_close_hinges = parseInt(document.getElementById("soft_close_hinges").value) || 0;
+            var drilling_holes = parseInt(document.getElementById("drilling_holes").value) || 0;
+            var wine_rack = parseInt(document.getElementById("wine_rack").value) || 0;
+            var extra_rooms = parseInt(document.getElementById("extra_rooms").value) || 0;
+            var media_unit = parseInt(document.getElementById("media_unit").value) || 0;
+            var media_unit_amount = parseInt(document.getElementById("media_unit_amount").value) || 0;
+            var slabs = parseInt(document.getElementById("slabs").value) || 0;
+            var backsplash = parseInt(document.getElementById("backsplash").value) || 0;
+            var plumbing = parseInt(document.getElementById("plumbing").value) || 0;
+
+            var shop_labour = doors_drawers * 50;
+            var sundries_materials = (doors_drawers <= 35) ? 350 : (350 + (doors_drawers - 35) * 5);
+            var door_removal_reinstallation = doors_drawers * 10;
+            var paint_shop_onsite =
+                doors_drawers <= 21
+                    ? 380
+                    : doors_drawers <= 31
+                    ? 380 + ((doors_drawers - 20) * (835 - 380) / (31 - 20))
+                    : 835 + ((doors_drawers - 31) * (1285 - 835) / (46 - 31));
+
+
+
+
+            var on_site_labour = (doors_drawers <= 20) ? 1120 :
+                ((doors_drawers <= 35) ? 1120 + (doors_drawers - 20) * 38 :
+                    ((doors_drawers <= 45) ? 1680 + (doors_drawers - 35) * 34 :
+                        ((doors_drawers <= 55) ? 1960 + (doors_drawers - 45) * 30 : 2240 + (doors_drawers - 55) * 25)
+                    )
+                );
+
+            var total_cost = shop_labour + sundries_materials + door_removal_reinstallation + paint_shop_onsite + on_site_labour;
+
+            if (second_color === 1) {
+                total_cost += 225 + 210 + 60;
+            }
+
+            if (oak_cabinets === 1) {
+                total_cost += 0.25 * (shop_labour + on_site_labour);
+            }
+
+            total_cost += glass_doors * 10;
+            total_cost += replace_glass * 80;
+            total_cost += interiors * 70;
+            total_cost += shelves * 27.5;
+            total_cost += (ornate_cabinets === 1) ? 0.05 * on_site_labour : 0;
+
+            if (soft_close_hinges === 1) {
+                total_cost += doors_drawers * 30;
+            }
+
+            if (drilling_holes === 1) {
+                total_cost += doors_drawers * 6.5;
+            }
+
+            total_cost += wine_rack * 75;
+            total_cost += extra_rooms * 50;
+            total_cost += media_unit_amount;
+
+            if (slabs > 0) {
+                total_cost += slabs * 2350; // Cost for slabs
+                total_cost += 300; // Demo fee
+                total_cost += 200; // Cleaning fee
+            } else {
+                total_cost += 0; // If no slabs, total cost remains 0
+            }
+
+            if (backsplash > 0) {
+                total_cost += backsplash * 2150; // Cost for slabs
+                total_cost += 300; // Demo fee
+            } else {
+                total_cost += 0; // If no slabs, total cost remains 0
+            }
+
+
+            total_cost += plumbing * (1610)
+            var location = document.getElementById("location").value;
+
+            // Add travel fee based on the selected location
+            switch (location) {
+                case "Langley":
+                    total_cost += 349;
+                    break;
+                case "Delta":
+                    total_cost += 174;
+                    break;
+                case "MapleRidge":
+                    total_cost += 349;
+                    break;
+                case "Abbotsford":
+                    total_cost += 581;
+                    break;
+                case "SouthSurrey":
+                    total_cost += 349;
+                    break;
+                case "BowenTrips":
+                    total_cost += 420;
+                    break;
+                case "BowenReno":
+                    total_cost += 884;
+                    break;
+                case "Condo":
+                    total_cost *= 1.05; // Add 5% for Condo fee
+                    break;
+                default:
+                    // For Vancouver or other cases, no additional travel fee
+                    break;
+            }
+                 
+            var management;
+            if (total_cost <= 6900) {
+                management = 58;
+            } else if (total_cost <= 11630) {
+                management = 116;
+            } else if (total_cost <= 23255) {
+                management = 232;
+            } else {
+                management = 348;
+            }
+
+            total_cost += management;
+
+            var sub_1 = total_cost * 1.72;
+            var sub_2 = sub_1 * 1.03;
+
+            var plus;
+            if (sub_2 <= 10000) {
+                plus = 35;
+            } else if (sub_2 <= 15000) {
+                plus = 80;
+            } else if (sub_2 <= 25000) {
+                plus = 90;
+            } else {
+                plus = 250;
+            }
+
+            sub_2 += plus
+            
+            /*var commission = final_cost * 1.03;
+
+            var TOTAL;
+            if (commission <= 10000) {
+                TOTAL = commission + 35;
+            } else if (commission <= 15000) {
+                TOTAL = commission + 80;
+            } else if (commission <= 25000) {
+                TOTAL = commission + 90;
+            } else {
+                TOTAL = commission + 250;
+            }
+
+            commission += TOTAL;*/
+
+            alert("Result: $" + sub_2.toFixed(2));
+        }
+    </script>
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <img id="logo" src="http://www.cabinetpaintingvancouver.com/wp-content/uploads/2019/01/CPVLogo_padded.png" alt="Cabinet Painting Vancouver">
+    <form>
+        <!-- Input fields with appropriate placeholders and validation -->
+        <input type="number" id="doors_drawers" placeholder="Number of doors/drawers" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="second_color" placeholder="Second color? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="oak_cabinets" placeholder="Are the cabinets oak? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="glass_doors" placeholder="Number of glass doors" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="replace_glass" placeholder="Number of glasses to replace" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="interiors" placeholder="How many interiors/open cabinets?" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="shelves" placeholder="How many shelves?" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="ornate_cabinets" placeholder="Ornate cabinets? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="soft_close_hinges" placeholder="Soft close hinges? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="drilling_holes" placeholder="Filling/drilling holes? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="wine_rack" placeholder="How many wine racks?" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="extra_rooms" placeholder="How many extra rooms?" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="media_unit" placeholder="Do you want a Media Unit? (1/0)" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="media_unit_amount" placeholder="Enter the price for Media Unit" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="slabs" placeholder="How many slabs" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="backsplash" placeholder="how many backsplash" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <input type="number" id="plumbing" placeholder="How many sink+faucet combos" style="display: none;" onkeydown="if(event.key==='Enter') showNextInput()" required><br>
+        <select id="location" style="display: none;" onchange="if(event.key==='Enter') showNextInput()" required><br>
+            <option value="Vancouver">Great Vancouver Area</option>
+            <option value="Langley">Langley</option>
+            <option value="Delta">Delta</option>
+            <option value="MapleRidge">Maple Ridge</option>
+            <option value="Abbotsford">Abbotsford</option>
+            <option value="SouthSurrey">South Surrey</option>
+            <option value="BowenTrips">Bowen 5 trips</option>
+            <option value="BowenReno">Bowen full reno</option>
+            <option value="Condo">Condo</option>
+        
+        </select>
+        <button type="button" onclick="showNextInput()" ontouchend="showNextInput()">Next</button>
+
+    </form>
+</body>
+</html>
+
